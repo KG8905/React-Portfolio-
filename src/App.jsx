@@ -1,31 +1,42 @@
-// src/App.js
+import React, { useState, useEffect } from 'react';
+import './App.css';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
-import React from "react";
-import Navbar from "./components/Navbar";
-import About from "./components/About";
-import Projects from "./components/Projects";
-import Resume from "./components/ Resume";
-import Testimonials from "./components/Testimonials";
-import Contact from "./components/Contact";
-import Footer from "./components/Footer";  // Import Footer
+import Navbar from './components/Navbar';
+import Homepage from './pages/Homepage';
+import About from './pages/About';
+import Projects from './pages/Projects';
+import Contact from './pages/Contact';
+import Footer from './components/Footer'; // Add a Footer component
 
 function App() {
+  const [theme, setTheme] = useState('light');
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+      setTheme(savedTheme);
+    }
+  }, []);
+
+  const toggleTheme = () => {
+    const newTheme = theme === 'light' ? 'dark' : 'light';
+    localStorage.setItem('theme', newTheme);
+    setTheme(newTheme);
+  };
+
   return (
-    <div className="App">
-      {/* Header */}
-      <Navbar />
-
-      {/* Main content */}
+    <div className={`App ${theme}`}>
+      <Navbar theme={theme} toggleTheme={toggleTheme} />
       <main>
-        <About />
-        <Projects />
-        <Skills />
-        <Testimonials />
-        <Contact />
+        <Routes>
+          <Route path="/" element={<Homepage />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/projects" element={<Projects />} />
+          <Route path="/contact" element={<Contact />} />
+        </Routes>
       </main>
-
-      {/* Footer */}
-      <Footer />  {/* Add Footer here */}
+      <Footer theme={theme} />
     </div>
   );
 }
